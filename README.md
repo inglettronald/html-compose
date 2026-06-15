@@ -15,7 +15,7 @@ Copy this repo into your Claude Code skills directory so the folder name is the
 skill name:
 
 ```bash
-git clone https://github.com/<you>/html-compose.git ~/.claude/skills/html-compose
+git clone https://github.com/inglettronald/html-compose.git ~/.claude/skills/html-compose
 ```
 
 Or symlink a checkout you keep elsewhere:
