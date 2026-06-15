@@ -1,0 +1,265 @@
+/* ============================================================================
+   html-compose — base style (the single declarative design spec)
+   ----------------------------------------------------------------------------
+   EVERYTHING tunable about the look lives in the :root block below: colour,
+   type scale, line length, document frame, rhythm, radii. To tune the base
+   ("wider columns", "more padding", "shift this blue") edit a token here — it
+   propagates to every document and every token-built library component.
+
+   Genres fork STRUCTURE only. Library components must reference these tokens
+   (var(--…)), never raw hex/px, so they inherit tuning. Raw values live ONLY
+   in this file.
+
+   Packaging: outputs are self-contained. Inline this whole file into a <style>
+   block, plus the CSS of any library component used.
+
+   Discipline: semantic colour (--warn/--good/--bad/--info) is used ONLY to
+   mean something. If a colour carries no meaning, use ink.
+   ============================================================================ */
+
+:root{
+  /* ---- surfaces ---------------------------------------------------------- */
+  --bg:#000;
+  --panel:#0c0c0d;
+  --panel-2:#111113;
+
+  /* ---- ink --------------------------------------------------------------- */
+  --ink:#d7d7d9;
+  --ink-dim:#8e8e93;
+  --ink-faint:#5c5c61;
+
+  /* ---- lines ------------------------------------------------------------- */
+  --line:#222226;
+  --line-2:#2c2c31;
+
+  /* ---- semantic colour (use ONLY to mean something) ---------------------- */
+  --warn:#e3b341;   /* caution / fragile  */
+  --good:#3fb950;   /* correct / safe     */
+  --bad:#f85149;    /* broken / risk      */
+  --info:#58a6ff;   /* notable / pointer  */
+
+  /* ---- type families ----------------------------------------------------- */
+  --mono:"SF Mono",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+
+  /* ---- type scale -------------------------------------------------------- */
+  --fs-base:15px;        /* body prose                          */
+  --lh-base:1.6;
+  --fs-h1:30px;
+  --fs-h2:21px;
+  --fs-h3:15px;
+  --fs-pre:12.5px;       /* code blocks, stack layers           */
+  --fs-table:13px;
+  --fs-mono:12px;        /* toc, legend, pills                  */
+  --fs-mono-sm:11px;     /* kicker, stack captions              */
+  --fs-label:10.5px;     /* uppercase mono caps: th, tags, axes */
+
+  /* ---- measure (line length for readable prose) -------------------------- */
+  --measure:80ch;        /* body paragraphs            */
+  --measure-narrow:76ch; /* sub/lede intro lines       */
+
+  /* ---- document frame ---------------------------------------------------- */
+  --doc-width:1080px;
+  --doc-pad-x:28px;
+  --doc-pad-top:56px;
+  --doc-pad-bottom:120px;
+
+  /* ---- rhythm ------------------------------------------------------------ */
+  --space-section:64px;  /* gap above each H2          */
+  --space-block:18px;    /* default block margin       */
+
+  /* ---- radii ------------------------------------------------------------- */
+  --radius:12px;         /* panels, cards              */
+  --radius-md:10px;      /* code blocks                */
+  --radius-sm:8px;       /* callouts                   */
+  --radius-code:5px;     /* inline code, pills         */
+  --radius-pill:999px;   /* toc chips                  */
+
+  /* ---- layout knobs ------------------------------------------------------ */
+  --col-min:210px;       /* min column width before stacks wrap        */
+  --sticky-offset:58px;  /* clearance so anchors clear the pinned TOC  */
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--sans);font-size:var(--fs-base);line-height:var(--lh-base);
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--doc-width);margin:0 auto;padding:var(--doc-pad-top) var(--doc-pad-x) var(--doc-pad-bottom)}
+
+/* ---- document header --------------------------------------------------- */
+header.head{border-bottom:1px solid var(--line);padding-bottom:28px;margin-bottom:8px}
+/* when a sticky TOC follows, let the TOC bar be the divider, not the header */
+header.head:has(+ nav.toc){border-bottom:none;padding-bottom:0;margin-bottom:0}
+.kicker{font-family:var(--mono);font-size:var(--fs-mono-sm);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)}
+h1{font-size:var(--fs-h1);line-height:1.2;margin:14px 0 10px;font-weight:650;letter-spacing:-.01em}
+.sub{color:var(--ink-dim);max-width:var(--measure-narrow);font-size:var(--fs-base)}
+
+/* ---- section headings (with hover anchor) ------------------------------ */
+h2{font-size:var(--fs-h2);margin:var(--space-section) 0 4px;font-weight:640;letter-spacing:-.01em;scroll-margin-top:var(--sticky-offset);position:relative}
+h2 .n{font-family:var(--mono);font-size:13px;color:var(--ink-faint);margin-right:12px;font-weight:400}
+h3{font-size:var(--fs-h3);margin:30px 0 8px;font-weight:640;color:var(--ink);scroll-margin-top:var(--sticky-offset);position:relative}
+.anchor{position:absolute;left:-1.05em;opacity:0;color:var(--ink-faint);text-decoration:none;font-weight:400;transition:opacity .12s}
+h2:hover>.anchor,h3:hover>.anchor,h2:focus-within>.anchor,h3:focus-within>.anchor{opacity:1}
+.anchor:hover{color:var(--info);text-decoration:none}
+
+/* ---- prose ------------------------------------------------------------- */
+.lede{color:var(--ink-dim);margin:6px 0 22px;max-width:var(--measure-narrow)}
+p{max-width:var(--measure)}
+code{font-family:var(--mono);font-size:.86em;background:var(--panel-2);border:1px solid var(--line);border-radius:var(--radius-code);padding:1px 5px;color:#c9c9cf}
+a{color:var(--info);text-decoration:none}
+a:hover{text-decoration:underline}
+.muted{color:var(--ink-dim)}
+.faint{color:var(--ink-faint)}
+em{font-style:italic;color:var(--ink)}
+
+/* ---- table of contents (sticky pill nav) ------------------------------- *
+   Must be a direct child of .wrap (a sibling AFTER header.head), not inside
+   the header — sticky is confined to its parent's box, and the short header
+   would unstick it immediately. Pins to the viewport top on scroll, spans the
+   content column (breaks out of .wrap's horizontal padding), and scrolls
+   horizontally when there are more entries than fit on one line.
+   ------------------------------------------------------------------------ */
+nav.toc{
+  position:sticky;top:0;z-index:20;
+  display:flex;flex-wrap:nowrap;align-items:stretch;
+  margin:20px calc(var(--doc-pad-x) * -1) 0;
+  padding:0 var(--doc-pad-x);
+  font-family:var(--mono);font-size:var(--fs-mono);
+  background:var(--bg);border-bottom:1px solid var(--line);
+  overflow-x:auto;overscroll-behavior-x:contain;
+  scrollbar-width:thin;scrollbar-color:var(--line-2) transparent;
+}
+nav.toc::-webkit-scrollbar{height:6px}
+nav.toc::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:var(--radius-pill)}
+nav.toc::-webkit-scrollbar-track{background:transparent}
+/* compact: plain divider-separated links (no pill chrome) pack more entries in */
+nav.toc a{flex:0 0 auto;white-space:nowrap;display:flex;align-items:center;color:var(--ink-dim);padding:9px 14px}
+nav.toc a+a{border-left:1px solid var(--line)}
+nav.toc a:hover{color:var(--ink);background:var(--panel-2);text-decoration:none}
+
+/* ---- panel ------------------------------------------------------------- */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;margin:var(--space-block) 0}
+.panel.tight{padding:16px 18px}
+
+/* ---- semantic callouts ------------------------------------------------- */
+.note{border-left:2px solid var(--line-2);padding:12px 16px;margin:16px 0;background:var(--panel);border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+.note .tag{font-family:var(--mono);font-size:var(--fs-label);letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:4px}
+.note.warn{border-left-color:var(--warn)} .note.warn .tag{color:var(--warn)}
+.note.bad{border-left-color:var(--bad)}   .note.bad .tag{color:var(--bad)}
+.note.good{border-left-color:var(--good)} .note.good .tag{color:var(--good)}
+.note.info{border-left-color:var(--info)} .note.info .tag{color:var(--info)}
+.note p{margin:4px 0 0}
+
+/* ---- dot legend -------------------------------------------------------- */
+.dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:7px;vertical-align:middle}
+.dot.warn{background:var(--warn)} .dot.bad{background:var(--bad)}
+.dot.good{background:var(--good)} .dot.info{background:var(--info)}
+.legend{display:flex;gap:22px;flex-wrap:wrap;font-family:var(--mono);font-size:var(--fs-mono);color:var(--ink-dim);margin:10px 0 0}
+
+/* ---- code block -------------------------------------------------------- *
+   Lightweight convention: plain mono text. Do NOT hand-colour keywords or
+   strings. Only four classes carry meaning:
+     .c comment/annotation · .add added/correct · .del removed/wrong · .em focus
+   ------------------------------------------------------------------------ */
+pre{background:var(--panel-2);border:1px solid var(--line);border-radius:var(--radius-md);padding:16px 18px;overflow:auto;font-family:var(--mono);font-size:var(--fs-pre);line-height:1.62;color:#c4c4ca;margin:14px 0}
+pre .c{color:var(--ink-faint)}
+pre .add{color:var(--good)}
+pre .del{color:var(--bad)}
+pre .em{color:var(--info)}
+
+/* ---- tables ------------------------------------------------------------ */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:var(--fs-table)}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:var(--fs-label);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim);font-weight:500}
+td code{font-size:.85em}
+tr:last-child td{border-bottom:none}
+.sev{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.sev.warn{color:var(--warn)} .sev.bad{color:var(--bad)} .sev.info{color:var(--info)} .sev.good{color:var(--good)}
+
+/* ---- comparison cards (pro / con / neu) -------------------------------- */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-block);margin:var(--space-block) 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px}
+.card.rec{border-color:#1f3a24;box-shadow:inset 0 0 0 1px #11280f}
+.card .badge{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:var(--radius-code);display:inline-block;margin-bottom:10px}
+.card.rec .badge{color:var(--good);border:1px solid #1f3a24}
+.card.alt .badge{color:var(--info);border:1px solid #16324f}
+.card h3{margin-top:4px;font-size:16px}
+.card ul{margin:10px 0 0;padding-left:0;list-style:none}
+.card li{padding-left:20px;position:relative;margin:7px 0;font-size:var(--fs-table);color:var(--ink-dim)}
+.card li.pro:before{content:"+";position:absolute;left:0;color:var(--good);font-family:var(--mono)}
+.card li.con:before{content:"\2212";position:absolute;left:0;color:var(--bad);font-family:var(--mono)}
+.card li.neu:before{content:"\2192";position:absolute;left:0;color:var(--ink-faint);font-family:var(--mono)}
+
+/* ---- numbered flow (steps / sequence) with connector spine ------------- */
+ol.flow{list-style:none;counter-reset:s;padding:0;margin:var(--space-block) 0}
+ol.flow>li{counter-increment:s;position:relative;padding:0 0 18px 46px;margin:0}
+ol.flow>li:before{content:counter(s);position:absolute;left:0;top:-2px;width:28px;height:28px;border:1px solid var(--line-2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;color:var(--ink-dim)}
+ol.flow>li:not(:last-child):after{content:"";position:absolute;left:14px;top:30px;bottom:2px;width:1px;background:var(--line)}
+ol.flow>li b{color:var(--ink)}
+
+/* ---- pills ------------------------------------------------------------- */
+.pillrow{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 0}
+.pill{font-family:var(--mono);font-size:var(--fs-mono);color:var(--ink-dim);border:1px solid var(--line);border-radius:var(--radius-code);padding:3px 9px}
+.pill.accent-info{box-shadow:inset 2px 0 0 var(--info)}
+.pill.accent-good{box-shadow:inset 2px 0 0 var(--good)}
+.pill.accent-warn{box-shadow:inset 2px 0 0 var(--warn)}
+.pill.accent-bad{box-shadow:inset 2px 0 0 var(--bad)}
+
+/* ---- stack diagram primitive (component: stack-layers) ----------------- *
+   CSS for the stack-layers library component lives here because it is stable
+   base furniture. accent-* = one semantic meaning; .raised = lifted surface;
+   .ghost = held-aside/absent. See components/stack-layers.md for markup.
+   ------------------------------------------------------------------------ */
+.stage{display:flex;gap:26px;flex-wrap:wrap;align-items:stretch}
+.stack-col{flex:1;min-width:var(--col-min)}
+.stack-col h4{font-family:var(--mono);font-size:var(--fs-mono-sm);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim);margin:0 0 10px;font-weight:500}
+.stack{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--panel-2)}
+.layer{padding:9px 13px;border-top:1px solid var(--line);font-size:var(--fs-pre);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.layer:first-child{border-top:none}
+.layer b{font-weight:600}
+.layer small{color:var(--ink-faint);font-family:var(--mono);font-size:var(--fs-label)}
+.layer.raised{background:#141417}
+.layer.accent-info{box-shadow:inset 2px 0 0 var(--info)}
+.layer.accent-good{box-shadow:inset 2px 0 0 var(--good)}
+.layer.accent-warn{box-shadow:inset 2px 0 0 var(--warn);color:var(--ink-dim)}
+.layer.accent-bad{box-shadow:inset 2px 0 0 var(--bad)}
+.layer.ghost{background:repeating-linear-gradient(135deg,#0a0a0b,#0a0a0b 6px,#0e0e10 6px,#0e0e10 12px);color:var(--ink-faint)}
+.axis{display:flex;flex-direction:column;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--ink-faint);text-align:right;padding:2px 0;white-space:nowrap}
+.axis .top{color:var(--ink-dim)}
+
+/* ---- misc -------------------------------------------------------------- */
+hr{border:none;border-top:1px solid var(--line);margin:0}
+.arrow{color:var(--ink-faint);align-self:center;font-family:var(--mono);font-size:20px}
+.colophon{font-size:var(--fs-mono);margin-top:20px;font-family:var(--mono);color:var(--ink-faint)}
+
+/* ---- responsive -------------------------------------------------------- */
+@media(max-width:760px){
+  .cards{grid-template-columns:1fr}
+  .stage{flex-direction:column}
+  .anchor{display:none}
+}
+
+/* ---- print / PDF export ------------------------------------------------ *
+   Screen identity is dark; print flips to a clean light document. Only the
+   colour tokens are overridden — layout/type tokens carry through.
+   ------------------------------------------------------------------------ */
+@media print{
+  :root{
+    --bg:#fff;--panel:#fff;--panel-2:#f6f6f7;
+    --ink:#16161a;--ink-dim:#43434a;--ink-faint:#6b6b73;
+    --line:#d8d8de;--line-2:#c4c4cc;
+    --warn:#9a6b00;--good:#1a7f37;--bad:#b4262b;--info:#0b5cad;
+  }
+  body{background:#fff;color:var(--ink);font-size:11pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .wrap{max-width:none;padding:0}
+  nav.toc{display:none}
+  .anchor{display:none}
+  a{color:var(--info)}
+  .panel,.card,.note,pre,table,.stack,.stage{break-inside:avoid;page-break-inside:avoid}
+  h1,h2,h3{break-after:avoid;page-break-after:avoid}
+  pre{white-space:pre-wrap;word-break:break-word}
+  .layer.ghost{background:repeating-linear-gradient(135deg,#eee,#eee 6px,#f6f6f7 6px,#f6f6f7 12px)}
+}
