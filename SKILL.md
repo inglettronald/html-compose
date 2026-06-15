@@ -12,7 +12,10 @@ description: >
 
 # html-compose
 
-> **`/html-compose onboard`** → skip the workflow below and run [Onboarding](#onboarding-html-compose-onboard).
+> **Modes — dispatch on the argument:**
+> - **`onboard`** → run [Onboarding](#onboarding-html-compose-onboard); skip the workflow below.
+> - **a bare number `<count>`** → run [Generating examples](#generating-examples-html-compose-count); skip the workflow below.
+> - **anything else** → the [Workflow](#workflow) below.
 
 Produce one **self-contained HTML document** per the user's preferences. The skill
 is a small shared **base** plus two growing **libraries**; keep them separate and
@@ -73,10 +76,9 @@ library" — capture it for reuse:
 
 1. **Confirm scope.** Identify the exact markup region; propose a searchable
    **kebab name**, a one-line **`communicates:`** intent, and **tags**. Confirm.
-2. **Write `components/<name>.md`** — the `communicates:` line, tags, markup, its
-   CSS (inline if bespoke, or note "CSS: base style.css"), and which genres it
-   suits. See [`components/stack-layers.md`](components/stack-layers.md) for the
-   shape.
+2. **Write `components/<name>.md`** — a `communicates:` line, a tags line, the
+   markup block, its CSS (inline if bespoke, or note "CSS: base style.css"), and
+   which genres it suits.
 3. **Register it** in [`components/INDEX.md`](components/INDEX.md):
    `- <name> — <communicates> · tags: a, b, c`
 4. **Tokens only.** A captured component uses `var(--…)`, never raw hex or fixed
@@ -117,26 +119,62 @@ edits intentional and rare. To shift the *voice* instead, edit
   base components used · genre-specific structure) and register it in
   `genres/INDEX.md` — the same capture loop as a component.
 
+## Generating examples (`/html-compose <count>`)
+
+A development mode that exercises the compose loop in bulk — to pressure-test the
+base, surface gaps in the component library, and see how output reads across
+genres. It generates pages; it does **not** silently grow the library.
+
+1. **Parse `<count>`.** Produce that many distinct documents. Spread them across
+   genres (don't generate four postmortems) and lean toward sections that need a
+   *tailored visualization*, so the run actually exercises inventing components
+   rather than just reusing scaffolding.
+
+2. **Fabricate coherent example info.** Invent a plausible topic per page with
+   self-consistent but clearly fictional details — services, dates, numbers,
+   names. Keep it obviously synthetic; this is filler to drive the loop, not real
+   reporting.
+
+3. **Compose each via the normal Workflow** — read `house-style.md`,
+   `catalog.md`, the chosen `genres/<genre>.md`, and `components/INDEX.md`; invent
+   components from tokens where nothing matches; inline all CSS/JS; meet the Hard
+   rules. Inventing fresh components is expected and good here.
+
+4. **Save enumerated** to `.claude/outputs/html/example-NN-<kebab-title>.html`
+   (zero-padded `NN`, `01`..`<count>`). Report the collection of paths.
+
+5. **Then ask what to keep.** List the components you invented across the run and
+   ask which, if any, to capture. Capture only the confirmed ones via the
+   [capture loop](#capturing-a-component-phrase-triggered) — nothing is written to
+   `components/` without that confirmation.
+
 ## Onboarding (`/html-compose onboard`)
 
-Personalize the skill for a new user. This writes **only** the two preference
-surfaces — [`house-style.md`](house-style.md) (voice) and the `:root` tokens in
-[`style.css`](style.css) (look). Never touch `SKILL.md`, `catalog.md`, or
-`genres/` — those are mechanism, shared by everyone.
+Personalize the skill for a new user. This writes the two preference surfaces —
+[`house-style.md`](house-style.md) (voice) and the `:root` tokens in
+[`style.css`](style.css) (look) — and **resets the component library to empty**,
+since captured components are personal and shouldn't be inherited. Never touch
+`SKILL.md`, `catalog.md`, or `genres/` — those are mechanism, shared by everyone.
 
 Run it as a short interview, then apply the answers:
 
-1. **Frame it.** One line: "I'll set up your voice and visual identity. Two
-   files change; the skill's logic doesn't." Then ask the questions below with
+1. **Frame it.** One line: "I'll set up your voice and visual identity and start
+   you with a clean component library. Two files change and the library resets;
+   the skill's logic doesn't." Then ask the questions below with
    `AskUserQuestion`, batched, with the current defaults pre-selected.
 
-2. **Voice & audience** → rewrites `house-style.md`.
+2. **Reset the component library.** Delete every file under `components/`, then
+   recreate `components/INDEX.md` as an empty index — its heading plus a single
+   `_No components captured yet._` line. This clears inherited or example
+   components so the user grows their own.
+
+3. **Voice & audience** → rewrites `house-style.md`.
    - Who reads these, and in what register? (peer engineers / mixed eng+product
      / leadership / external) — sets the tone line.
    - Density: terse-and-dense vs. more explanatory.
    - Anything to forbid or require (emoji, first person, hedging, jargon).
 
-3. **Look** → edits `style.css` `:root` tokens (and the `@media print` block to
+4. **Look** → edits `style.css` `:root` tokens (and the `@media print` block to
    stay coherent).
    - Base theme: dark or light surfaces.
    - Accent / semantic palette: keep the warn/good/bad/info defaults or supply
@@ -144,13 +182,13 @@ Run it as a short interview, then apply the answers:
    - Type: default system sans+mono stacks or custom families.
    - Frame: default width/rhythm or tighter/looser.
 
-4. **Apply.** Rewrite `house-style.md`'s bullets in their words (keep the
+5. **Apply.** Rewrite `house-style.md`'s bullets in their words (keep the
    structure: density, lede, prefer-component, measure, concrete, voice,
    one-callout, earn-the-colour). Edit only the relevant `style.css` tokens —
    leave layout/scaffolding rules alone. Keep semantic colour meaning-bound
    regardless of hue.
 
-5. **Preview.** Offer to generate a one-page sample document (any genre) so they
+6. **Preview.** Offer to generate a one-page sample document (any genre) so they
    can see their identity before committing. Save under
    `.claude/outputs/html/onboarding-preview.html`.
 

@@ -33,10 +33,11 @@ HTML report.
 /html-compose onboard
 ```
 
-This runs a short interview and writes **only** your preference files: your voice
-into `house-style.md`, and your theme, palette, and type into the `:root` tokens
-of `style.css`. It never edits the skill's logic, so you can re-run it any time
-and pull skill updates without losing your style.
+This runs a short interview and writes your preference files: your voice into
+`house-style.md`, and your theme, palette, and type into the `:root` tokens of
+`style.css`. It also resets the component library to empty, since captured
+components are personal. It never edits the skill's logic, so you can re-run it
+any time and pull skill updates without losing your style.
 
 You can skip onboarding and use the defaults immediately. Onboarding just changes
 the starting point.
@@ -56,6 +57,19 @@ Output is saved to `.claude/outputs/html/<title>.html` in the current project.
 
 When you like a visualization it produced, say so ("save that", "add it to the
 library") and it captures the component for reuse in later documents.
+
+### Exercise the loop
+
+```
+/html-compose 5
+```
+
+Pass a bare number to generate that many example pages on fabricated topics,
+spread across genres. It's a development mode for pressure-testing the base and
+surfacing gaps in the component library. The pages land in
+`.claude/outputs/html/example-NN-*.html`, and afterwards it asks which of the
+components it invented you'd like to capture — nothing is added to the library
+without your say-so.
 
 ## How it is organized
 
