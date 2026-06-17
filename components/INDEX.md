@@ -13,6 +13,13 @@ Each entry: `<name> — communicates · tags: …`. Read the matching
 - stack-layers — vertical layer/precedence stacks: what draws/sits on top of
   what, before/after orderings, held-aside state · tags: layers, precedence,
   z-order, stack, before-after, rendering, hierarchy
+- uml-class-diagram — class/interface relationship tiers, adapter seams, and
+  contrasting runtime paths (preview vs live) · tags: uml, class-diagram,
+  architecture, interfaces, adapters, refactor-shape, api-sketch, dependency,
+  seam
+- mermaid-in-html — embed Mermaid in HTML without HTML-parser or classDiagram
+  syntax failures · tags: mermaid, classDiagram, html, embedding, stereotypes,
+  text-plain, syntax
 
 <!-- Add new entries above this line, one per captured component. Keep the
      `communicates` phrasing about the JOB, so future searches by intent hit. -->

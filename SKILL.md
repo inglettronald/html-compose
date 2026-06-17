@@ -62,9 +62,10 @@ nothing to imitate or keep in sync.
      the point of the library; a fresh one is a capture candidate (below).
 
 4. **Inline everything.** Paste the full `style.css` into one `<style>` block,
-   plus the CSS of any library component that carries its own. Add the sticky-TOC
-   wheel script (`catalog.md`) before `</body>`. One portable file — no `<link>`,
-   CDN, or external JS.
+   then append the `## CSS` block from each library component you used (every
+   tailored component carries its own). Add the sticky-TOC wheel script
+   (`catalog.md`) before `</body>`. One portable file — no `<link>`, CDN, or
+   external JS.
 
 5. **Save** to `.claude/outputs/html/<kebab-title>.html` in the current project
    (create the dir if missing). Report the path.
@@ -77,12 +78,16 @@ library" — capture it for reuse:
 1. **Confirm scope.** Identify the exact markup region; propose a searchable
    **kebab name**, a one-line **`communicates:`** intent, and **tags**. Confirm.
 2. **Write `components/<name>.md`** — a `communicates:` line, a tags line, the
-   markup block, its CSS (inline if bespoke, or note "CSS: base style.css"), and
-   which genres it suits.
+   markup block, and a `## CSS` section holding the component's own CSS (rules
+   plus any responsive/print overrides it needs). The component owns its CSS; it
+   is never added to `style.css`.
 3. **Register it** in [`components/INDEX.md`](components/INDEX.md):
    `- <name> — <communicates> · tags: a, b, c`
-4. **Tokens only.** A captured component uses `var(--…)`, never raw hex or fixed
-   fonts, so base-style tuning propagates. Raw values live only in `style.css`.
+4. **Tokens for the palette.** A captured component references the shared tokens
+   (`var(--warn/good/bad/info)`, `--ink*`, `--line*`, type, spacing) for anything
+   that should track the theme, so base-style tuning propagates. A one-off
+   surface shade local to the component may be a raw hex in its `## CSS` block;
+   the shared palette stays in `style.css` `:root` only.
 
 Before adding something near an existing entry, extend that entry instead.
 
@@ -111,8 +116,10 @@ edits intentional and rare. To shift the *voice* instead, edit
 
 ## Governance (keep the layers healthy)
 
-- **Base stays small.** New colours/fonts/radii/spacing go in `style.css` tokens
-  or they don't exist — never in a genre or component file.
+- **Base stays small.** Shared design tokens (colours/fonts/radii/spacing) go in
+  `style.css` `:root` or they don't exist — never duplicated into a genre or
+  component file. `style.css` itself holds only those tokens plus the `catalog.md`
+  scaffolding; a component's own rules live in its `## CSS` section, not here.
 - **Library entries must be searchable.** No `communicates:` line and tags means
   unfindable, so it's not done. Name by communicative job, not first topic.
 - **Adding a genre:** drop `genres/<name>.md` (when to use · section skeleton ·

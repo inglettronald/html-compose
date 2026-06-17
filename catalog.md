@@ -7,9 +7,10 @@ only via deliberate tuning of `style.css`. All styling comes from `style.css`
 
 Tailored visualizations built for a specific communicative job (layer stacks,
 before/after diagrams, savings charts, spatial layouts) are **not** here — they
-live in the searchable component library at `components/`. Search
-`components/INDEX.md` by intent, and invent a new one from tokens when nothing
-fits (see SKILL.md).
+live in the searchable component library at `components/`, each carrying its own
+CSS in a `## CSS` section that is inlined alongside `style.css` only when used.
+Search `components/INDEX.md` by intent, and invent a new one from tokens when
+nothing fits (see SKILL.md).
 
 The HTML skeleton every document starts from:
 
