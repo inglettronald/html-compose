@@ -20,6 +20,11 @@ Each entry: `<name> — communicates · tags: …`. Read the matching
 - mermaid-in-html — embed Mermaid in HTML without HTML-parser or classDiagram
   syntax failures · tags: mermaid, classDiagram, html, embedding, stereotypes,
   text-plain, syntax
+- line-chart — one or more series plotted over a shared axis to compare
+  trajectories/trends/rates/crossover; static inline SVG, optional threshold line
+  and markers (decay/growth is one case) · tags: chart, line-chart, svg, series,
+  trend, time-series, comparison, trajectory, plot, curves, rate, decay, growth,
+  crossover, threshold
 
 <!-- Add new entries above this line, one per captured component. Keep the
      `communicates` phrasing about the JOB, so future searches by intent hit. -->
